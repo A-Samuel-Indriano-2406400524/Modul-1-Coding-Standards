@@ -30,11 +30,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findProductById(String productId){
-        return productRepository.findById(productId);
+        return productRepository.findProductById(productId);
     }
 
     @Override
     public void updateProduct(Product product){
-        productRepository.update(product);
+        productRepository.updateProduct(product);
     }
 }
