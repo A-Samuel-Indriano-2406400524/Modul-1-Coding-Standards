@@ -40,4 +40,15 @@ public class ProductRepository {
         }
         return null;
     }
+
+    public void deleteProduct(String id){
+        Iterator<Product> iterator = productData.iterator();
+        while (iterator.hasNext()){
+            Product product = iterator.next();
+            if (product.getProductId().equals(id)){
+                iterator.remove();
+                return;
+            }
+        }
+    }
 }
