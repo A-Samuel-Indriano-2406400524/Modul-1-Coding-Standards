@@ -65,4 +65,83 @@ class ProductRepositoryTest {
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
     }
+
+    @Test
+    void testUpdateProductSuccess() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        product.setProductName("Old Name");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        Product updated = new Product();
+        updated.setProductId("id-1");
+        updated.setProductName("New Name");
+        updated.setProductQuantity(20);
+
+        Product result = productRepository.updateProduct(updated);
+        assertNotNull(result);
+        assertEquals("New Name", result.getProductName());
+        assertEquals(20, result.getProductQuantity());
+
+        Product fetched = productRepository.findProductById("id-1");
+        assertEquals("New Name", fetched.getProductName());
+        assertEquals(20, fetched.getProductQuantity());
+    }
+
+    @Test
+    void testUpdateProductNotFoundKeepsExistingData() {
+        Product existing = new Product();
+        existing.setProductId("id-1");
+        existing.setProductName("Existing");
+        existing.setProductQuantity(5);
+        productRepository.create(existing);
+
+        Product unknown = new Product();
+        unknown.setProductId("missing");
+        unknown.setProductName("Should Not Be Saved");
+        unknown.setProductQuantity(99);
+
+        Product result = productRepository.updateProduct(unknown);
+        assertNull(result);
+        Iterator<Product> iterator = productRepository.findAll();
+        assertTrue(iterator.hasNext());
+        Product stillThere = iterator.next();
+        assertEquals("id-1", stillThere.getProductId());
+        assertEquals("Existing", stillThere.getProductName());
+        assertEquals(5, stillThere.getProductQuantity());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    void testDeleteProductSuccess() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        product.setProductName("To Delete");
+        product.setProductQuantity(1);
+        productRepository.create(product);
+        productRepository.deleteProduct("id-1");
+
+        Iterator<Product> iterator = productRepository.findAll();
+        assertFalse(iterator.hasNext());
+        assertNull(productRepository.findProductById("id-1"));
+    }
+
+    @Test
+    void testDeleteProductNonExistingDoesNothing() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        product.setProductName("Stay");
+        product.setProductQuantity(1);
+        productRepository.create(product);
+        productRepository.deleteProduct("missing");
+
+        Iterator<Product> iterator = productRepository.findAll();
+        assertTrue(iterator.hasNext());
+        Product remaining = iterator.next();
+        assertEquals("id-1", remaining.getProductId());
+        assertEquals("Stay", remaining.getProductName());
+        assertEquals(1, remaining.getProductQuantity());
+        assertFalse(iterator.hasNext());
+    }
 }
