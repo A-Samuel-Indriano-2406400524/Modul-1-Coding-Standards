@@ -6,9 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -34,8 +38,13 @@ class CreateProductFunctionalTest {
     void createProduct_isCorrect(ChromeDriver driver) throws Exception {
         driver.get(baseUrl + "/product/create");
         driver.findElement(By.id("nameInput")).sendKeys("Sampo Cap Bambang");
+        driver.findElement(By.id("quantityInput")).clear();
         driver.findElement(By.id("quantityInput")).sendKeys("100");
         driver.findElement(By.tagName("button")).click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.urlContains("/product/list"));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table//tbody/tr[td[text()='Sampo Cap Bambang']]")));
         
         String pageSource = driver.getPageSource();
         
