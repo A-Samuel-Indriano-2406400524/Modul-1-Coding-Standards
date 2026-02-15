@@ -1,7 +1,8 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.10"
-    id("io.spring.dependency-management") version "1.1.7"
+    jacoco
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -42,26 +43,17 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.register<Test>("unitTest") {
-    description = "Runs unit tests."
-    group = "verification"
-    testClassesDirs = sourceSets["test"].output.classesDirs
-    classpath = sourceSets["test"].runtimeClasspath
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
+tasks.test {
     filter {
         excludeTestsMatching("*FunctionalTest")
     }
+    finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.register<Test>("functionalTest") {
-    description = "Runs functional tests."
-    group = "verification"
-    testClassesDirs = sourceSets["test"].output.classesDirs
-    classpath = sourceSets["test"].runtimeClasspath
-    filter {
-        includeTestsMatching("*FunctionalTest")
-    }
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
