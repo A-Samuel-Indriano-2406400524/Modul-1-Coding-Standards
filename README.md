@@ -1,4 +1,19 @@
-Reflection 1
+Reflection 2.1 (Module 2)
+1. In this exercise, I selected 3 code quality issues from SonarCloud findings. The first issue was a critical severity
+issue, which there were some duplicated literal "redirect:/product/list" in my code. I resolved it by extracting 
+the value into a constant and reusing it in many of the related methods. The second issue was a critical severity
+also, which there was an empty setup method. I resolved it by removing the empty setup method. The third one was a minor
+severity, which I resolved by removing an unused MockBean import. My strategy was to prioritize high-severity issues
+first, then apply some refactoring, and verify the result by rerunning the test.
+
+2. I think my current implementation has met the definition of Continuous Integration. Every push and pull request
+triggers an automated test execution, and SonarCloud analysis is also integrated, so code quality issues can be detected 
+before changes are finalized. This gives fast feedback and helps prevent bad code from being merged. For deployment,
+I also implemented CD using a pull-based approach with Koyeb. Koyeb is connected to my repository main
+branch, then redeploys automatically when changes are merged to main branch.
+
+
+Reflection 1.1 (Module 1)
 1. Clean code  
 I have learned to apply and understand clean code principles while writing my code. One of the main things
 I focused on was using clear and descriptive variable names, so the variable names are self-explanatory
@@ -14,7 +29,7 @@ A mistake I made several times was rushing to commit to Git without realizing th
 in my code were still incomplete. To prevent this from happening again, I'll try to be
 more careful by checking the completeness of the logic and bug testing before finally committing to Git.
 
-Reflection 2
+Reflection 1.2 (Module 1)
 1. Implementing unit test felt quite difficult at first, but eventually I started to understand it.
 I also feel more confident because unit test help to verify the correctness of my code logics. I feel
 like the number of unit tests depends on how much the code coverage. For example, 90% code coverage is already
