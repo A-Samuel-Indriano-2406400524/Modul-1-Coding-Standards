@@ -11,6 +11,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+    private String REDIRECT_PRODUCT_LIST = "redirect:/product/list";
     private ProductService service;
 
     public ProductController(ProductService service) {
@@ -40,14 +41,14 @@ public class ProductController {
 
     @GetMapping({"/edit", "/edit/"})
     public String editProductRoot(){
-        return "redirect:/product/list";
+        return REDIRECT_PRODUCT_LIST;
     }
 
     @GetMapping("/edit/{id}")
     public String editProductPage(@PathVariable("id") String productId, Model model){
         Product product = service.findProductById(productId);
         if (product == null){
-            return "redirect:/product/list";
+            return REDIRECT_PRODUCT_LIST;
         }
         model.addAttribute("product", product);
         return "editProduct";
@@ -56,12 +57,12 @@ public class ProductController {
     @PostMapping("/edit")
     public String editProductPost(@ModelAttribute Product product){
         service.updateProduct(product);
-        return "redirect:/product/list";
+        return REDIRECT_PRODUCT_LIST;
     }
 
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") String productId){
         service.deleteProduct(productId);
-        return "redirect:/product/list";
+        return REDIRECT_PRODUCT_LIST;
     }
 }
