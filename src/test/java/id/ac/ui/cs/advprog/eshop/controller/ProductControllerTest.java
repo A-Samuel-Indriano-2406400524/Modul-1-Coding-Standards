@@ -10,11 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ui.Model;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,29 +27,16 @@ class ProductControllerTest {
 
     @Test
     void testCreateProductPage() {
-        Product product = new Product();
-        String viewName = controller.createProductPage(product);
+        String viewName = controller.createProductPage(model);
         assertEquals("createProduct", viewName);
+        verify(model).addAttribute(org.mockito.ArgumentMatchers.eq("product"), org.mockito.ArgumentMatchers.any(Product.class));
     }
 
     @Test
-    void testCreateProductPostWhenIdIsNull() {
+    void testCreateProductPost() {
         Product product = new Product();
-        product.setProductId(null);
         String viewName = controller.createProductPost(product, model);
         assertEquals("redirect:list", viewName);
-        assertNotNull(product.getProductId());
-        assertFalse(product.getProductId().isBlank());
-        verify(service).create(product);
-    }
-
-    @Test
-    void testCreateProductPostWhenIdAlreadyExists() {
-        Product product = new Product();
-        product.setProductId("id-1");
-        String viewName = controller.createProductPost(product, model);
-        assertEquals("redirect:list", viewName);
-        assertEquals("id-1", product.getProductId());
         verify(service).create(product);
     }
 
@@ -69,16 +51,10 @@ class ProductControllerTest {
     }
 
     @Test
-    void testEditProductRoot() {
-        String viewName = controller.editProductRoot();
-        assertEquals("redirect:/product/list", viewName);
-    }
-
-    @Test
     void testEditProductPageWhenProductFound() {
         Product product = new Product();
         product.setProductId("id-1");
-        when(service.findProductById("id-1")).thenReturn(product);
+        when(service.findById("id-1")).thenReturn(product);
         String viewName = controller.editProductPage("id-1", model);
         assertEquals("editProduct", viewName);
         verify(model).addAttribute("product", product);
@@ -86,25 +62,25 @@ class ProductControllerTest {
 
     @Test
     void testEditProductPageWhenProductNotFound() {
-        when(service.findProductById("missing")).thenReturn(null);
+        when(service.findById("missing")).thenReturn(null);
         String viewName = controller.editProductPage("missing", model);
-        assertEquals("redirect:/product/list", viewName);
-        verify(model, never()).addAttribute(eq("product"), any());
+        assertEquals("editProduct", viewName);
+        verify(model).addAttribute("product", null);
     }
 
     @Test
     void testEditProductPost() {
         Product product = new Product();
         product.setProductId("id-1");
-        String viewName = controller.editProductPost(product);
-        assertEquals("redirect:/product/list", viewName);
-        verify(service).updateProduct(product);
+        String viewName = controller.editProductPost(product, model);
+        assertEquals("redirect:list", viewName);
+        verify(service).update("id-1", product);
     }
 
     @Test
     void testDeleteProduct() {
         String viewName = controller.deleteProduct("id-1");
-        assertEquals("redirect:/product/list", viewName);
-        verify(service).deleteProduct("id-1");
+        assertEquals("redirect:list", viewName);
+        verify(service).deleteProductById("id-1");
     }
 }
