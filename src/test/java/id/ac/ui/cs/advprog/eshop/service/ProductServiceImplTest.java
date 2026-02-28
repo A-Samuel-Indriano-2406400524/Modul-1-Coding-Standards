@@ -50,27 +50,27 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void testFindProductById() {
+    void testFindById() {
         Product product = new Product();
         product.setProductId("id-1");
         when(productRepository.findProductById("id-1")).thenReturn(product);
         
-        Product result = productService.findProductById("id-1");
+        Product result = productService.findById("id-1");
         assertSame(product, result);
         verify(productRepository).findProductById("id-1");
     }
 
     @Test
-    void testUpdateProduct() {
+    void testUpdate() {
         Product product = new Product();
         product.setProductId("id-1");
-        productService.updateProduct(product);
+        productService.update("id-1", product);
         verify(productRepository).updateProduct(product);
     }
 
     @Test
-    void testDeleteProduct() {
-        productService.deleteProduct("id-1");
+    void testDeleteProductById() {
+        productService.deleteProductById("id-1");
         verify(productRepository).deleteProduct("id-1");
     }
 }
