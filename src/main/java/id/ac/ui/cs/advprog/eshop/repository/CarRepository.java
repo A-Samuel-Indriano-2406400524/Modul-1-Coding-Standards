@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Repository
-public class CarRepository implements CarRepositoryInterface {
+public class CarRepository implements CarReadRepository, CarWriteRepository {
     
     private List<Car> carData = new ArrayList<>();
 

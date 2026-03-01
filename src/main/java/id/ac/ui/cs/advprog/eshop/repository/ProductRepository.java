@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Repository
-public class ProductRepository implements ProductRepositoryInterface {
+public class ProductRepository implements ProductReadRepository, ProductWriteRepository {
     private List<Product> productData = new ArrayList<>();
 
     @Override

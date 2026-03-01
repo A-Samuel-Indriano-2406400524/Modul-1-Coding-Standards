@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.service;
 import id.ac.ui.cs.advprog.eshop.model.Car;
-import id.ac.ui.cs.advprog.eshop.repository.CarRepositoryInterface;
+import id.ac.ui.cs.advprog.eshop.repository.CarReadRepository;
+import id.ac.ui.cs.advprog.eshop.repository.CarWriteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -12,7 +13,10 @@ import java.util.UUID;
 public class CarServiceImpl implements CarService {
     
     @Autowired
-    private CarRepositoryInterface carRepository;
+    private CarReadRepository carReadRepository;
+
+    @Autowired
+    private CarWriteRepository carWriteRepository;
 
     @Override
     public Car create(Car car) {
@@ -20,13 +24,13 @@ public class CarServiceImpl implements CarService {
             UUID uuid = UUID.randomUUID();
             car.setCarId(uuid.toString());
         }
-        carRepository.create(car);
+        carWriteRepository.create(car);
         return car;
     }
 
     @Override
     public List<Car> findAll() {
-        Iterator<Car> carIterator = carRepository.findAll();
+        Iterator<Car> carIterator = carReadRepository.findAll();
         List<Car> allCar = new ArrayList<>();
         carIterator.forEachRemaining(allCar::add);
         return allCar;
@@ -34,17 +38,17 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car findById(String carId){
-        Car car = carRepository.findById(carId);
+        Car car = carReadRepository.findById(carId);
         return car;
     }
 
     @Override
     public void update(String carId, Car car) {
-        carRepository.update(carId, car);
+        carWriteRepository.update(carId, car);
     }
 
     @Override
     public void deleteCarById(String carId) {
-        carRepository.delete(carId);
+        carWriteRepository.delete(carId);
     }
 }
