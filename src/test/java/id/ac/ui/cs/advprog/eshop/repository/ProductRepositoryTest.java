@@ -73,12 +73,12 @@ class ProductRepositoryTest {
         updated.setProductName("New Name");
         updated.setProductQuantity(20);
 
-        Product result = productRepository.updateProduct(updated);
+        Product result = productRepository.update("id-1", updated);
         assertNotNull(result);
         assertEquals("New Name", result.getProductName());
         assertEquals(20, result.getProductQuantity());
 
-        Product fetched = productRepository.findProductById("id-1");
+        Product fetched = productRepository.findById("id-1");
         assertEquals("New Name", fetched.getProductName());
         assertEquals(20, fetched.getProductQuantity());
     }
@@ -96,7 +96,7 @@ class ProductRepositoryTest {
         unknown.setProductName("Should Not Be Saved");
         unknown.setProductQuantity(99);
 
-        Product result = productRepository.updateProduct(unknown);
+        Product result = productRepository.update("missing", unknown);
         assertNull(result);
         Iterator<Product> iterator = productRepository.findAll();
         assertTrue(iterator.hasNext());
@@ -114,11 +114,11 @@ class ProductRepositoryTest {
         product.setProductName("To Delete");
         product.setProductQuantity(1);
         productRepository.create(product);
-        productRepository.deleteProduct("id-1");
+        productRepository.delete("id-1");
 
         Iterator<Product> iterator = productRepository.findAll();
         assertFalse(iterator.hasNext());
-        assertNull(productRepository.findProductById("id-1"));
+        assertNull(productRepository.findById("id-1"));
     }
 
     @Test
@@ -128,7 +128,7 @@ class ProductRepositoryTest {
         product.setProductName("Stay");
         product.setProductQuantity(1);
         productRepository.create(product);
-        productRepository.deleteProduct("missing");
+        productRepository.delete("missing");
 
         Iterator<Product> iterator = productRepository.findAll();
         assertTrue(iterator.hasNext());

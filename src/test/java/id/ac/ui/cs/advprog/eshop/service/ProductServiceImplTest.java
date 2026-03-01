@@ -57,11 +57,11 @@ class ProductServiceImplTest {
     void testFindById() {
         Product product = new Product();
         product.setProductId("id-1");
-        when(productReadRepository.findProductById("id-1")).thenReturn(product);
+        when(productReadRepository.findById("id-1")).thenReturn(product);
         
         Product result = productService.findById("id-1");
         assertSame(product, result);
-        verify(productReadRepository).findProductById("id-1");
+        verify(productReadRepository).findById("id-1");
     }
 
     @Test
@@ -69,12 +69,12 @@ class ProductServiceImplTest {
         Product product = new Product();
         product.setProductId("id-1");
         productService.update("id-1", product);
-        verify(productWriteRepository).updateProduct(product);
+        verify(productWriteRepository).update("id-1", product);
     }
 
     @Test
     void testDeleteProductById() {
         productService.deleteProductById("id-1");
-        verify(productWriteRepository).deleteProduct("id-1");
+        verify(productWriteRepository).delete("id-1");
     }
 }

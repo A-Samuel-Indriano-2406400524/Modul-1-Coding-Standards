@@ -22,7 +22,7 @@ public class ProductRepository implements ProductReadRepository, ProductWriteRep
     }
     
     @Override
-    public Product findProductById(String id){
+    public Product findById(String id){
         for (Product product : productData){
             if (product.getProductId().equals(id)){
                 return product;
@@ -32,10 +32,10 @@ public class ProductRepository implements ProductReadRepository, ProductWriteRep
     }
     
     @Override
-    public Product updateProduct(Product product){
+    public Product update(String id, Product product){
         for (int i = 0; i < productData.size(); i++){
             Product p = productData.get(i);
-            if (p.getProductId().equals(product.getProductId())){
+            if (p.getProductId().equals(id)){
                 productData.set(i, product);
                 return product;
             }
@@ -44,7 +44,7 @@ public class ProductRepository implements ProductReadRepository, ProductWriteRep
     }
 
     @Override
-    public void deleteProduct(String id){
+    public void delete(String id){
         Iterator<Product> iterator = productData.iterator();
         while (iterator.hasNext()){
             Product product = iterator.next();
