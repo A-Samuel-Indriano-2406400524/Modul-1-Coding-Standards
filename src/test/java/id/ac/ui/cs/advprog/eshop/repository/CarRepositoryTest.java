@@ -34,15 +34,14 @@ class CarRepositoryTest {
     }
 
     @Test
-    void testCreateAssignsIdWhenCarIdIsNull() {
+    void testCreateKeepsNullIdWhenCarIdIsNull() {
         Car car = new Car();
         car.setCarName("Audi");
         car.setCarColor("White");
         car.setCarQuantity(5);
 
         Car createdCar = carRepository.create(car);
-        assertNotNull(createdCar.getCarId());
-        assertFalse(createdCar.getCarId().isBlank());
+        assertNull(createdCar.getCarId());
     }
 
     @Test

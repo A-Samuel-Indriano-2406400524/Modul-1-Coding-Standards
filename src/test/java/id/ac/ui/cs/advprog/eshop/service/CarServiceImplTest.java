@@ -1,7 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Car;
-import id.ac.ui.cs.advprog.eshop.repository.CarRepository;
+import id.ac.ui.cs.advprog.eshop.repository.CarReadRepository;
+import id.ac.ui.cs.advprog.eshop.repository.CarWriteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,7 +23,10 @@ import static org.mockito.Mockito.when;
 class CarServiceImplTest {
 
     @Mock
-    private CarRepository carRepository;
+    private CarReadRepository carReadRepository;
+
+    @Mock
+    private CarWriteRepository carWriteRepository;
 
     @InjectMocks
     private CarServiceImpl carService;
@@ -29,11 +35,21 @@ class CarServiceImplTest {
     void testCreate() {
         Car car = new Car();
         car.setCarId("car-1");
-        when(carRepository.create(car)).thenReturn(car);
+        when(carWriteRepository.create(car)).thenReturn(car);
 
         Car createdCar = carService.create(car);
         assertSame(car, createdCar);
-        verify(carRepository).create(car);
+        verify(carWriteRepository).create(car);
+    }
+
+    @Test
+    void testCreateAssignsIdWhenCarIdIsNull() {
+        Car car = new Car();
+
+        Car createdCar = carService.create(car);
+        assertNotNull(createdCar.getCarId());
+        assertFalse(createdCar.getCarId().isBlank());
+        verify(carWriteRepository).create(car);
     }
 
     @Test
@@ -43,7 +59,7 @@ class CarServiceImplTest {
         Car secondCar = new Car();
         secondCar.setCarId("car-2");
         Iterator<Car> iterator = List.of(firstCar, secondCar).iterator();
-        when(carRepository.findAll()).thenReturn(iterator);
+        when(carReadRepository.findAll()).thenReturn(iterator);
 
         List<Car> cars = carService.findAll();
         assertEquals(2, cars.size());
@@ -55,11 +71,11 @@ class CarServiceImplTest {
     void testFindById() {
         Car car = new Car();
         car.setCarId("car-1");
-        when(carRepository.findById("car-1")).thenReturn(car);
+        when(carReadRepository.findById("car-1")).thenReturn(car);
 
         Car result = carService.findById("car-1");
         assertSame(car, result);
-        verify(carRepository).findById("car-1");
+        verify(carReadRepository).findById("car-1");
     }
 
     @Test
@@ -68,12 +84,12 @@ class CarServiceImplTest {
         car.setCarId("car-1");
 
         carService.update("car-1", car);
-        verify(carRepository).update("car-1", car);
+        verify(carWriteRepository).update("car-1", car);
     }
 
     @Test
     void testDeleteCarById() {
         carService.deleteCarById("car-1");
-        verify(carRepository).delete("car-1");
+        verify(carWriteRepository).delete("car-1");
     }
 }

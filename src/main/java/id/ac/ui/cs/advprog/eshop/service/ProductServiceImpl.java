@@ -1,7 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
-import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
+import id.ac.ui.cs.advprog.eshop.repository.ProductReadRepository;
+import id.ac.ui.cs.advprog.eshop.repository.ProductWriteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,21 +11,23 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    private ProductRepository productRepository;
+    private ProductReadRepository productReadRepository;
+    private ProductWriteRepository productWriteRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductServiceImpl(ProductReadRepository productReadRepository, ProductWriteRepository productWriteRepository) {
+        this.productReadRepository = productReadRepository;
+        this.productWriteRepository = productWriteRepository;
     }
 
     @Override
     public Product create(Product product) {
-        productRepository.create(product);
+        productWriteRepository.create(product);
         return product;
     }
 
     @Override
     public List<Product> findAll() {
-        Iterator<Product> productIterator = productRepository.findAll();
+        Iterator<Product> productIterator = productReadRepository.findAll();
         List<Product> allProduct = new ArrayList<>();
         productIterator.forEachRemaining(allProduct::add);
         return allProduct;
@@ -32,16 +35,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String productId){
-        return productRepository.findProductById(productId);
+        return productReadRepository.findById(productId);
     }
 
     @Override
     public void update(String productId, Product product){
-        productRepository.updateProduct(product);
+        productWriteRepository.update(productId, product);
     }
 
     @Override
     public void deleteProductById(String productId){
-        productRepository.deleteProduct(productId);
+        productWriteRepository.delete(productId);
     }
 }
